@@ -10,6 +10,7 @@ import UserListItem from './UserListItem'
 
 const SideDrawer = () => {
     const { user,setSelectedChat ,chats,setChats} = useChatContext();
+    console.log(user)
     const { isOpen, onOpen, onClose } = useDisclosure()
 
     const [search, setSearch] = useState('')
@@ -30,7 +31,7 @@ const SideDrawer = () => {
             const config = {
                 headers: {
                     "Content-type": "application/json",
-                    Authorization: `Bearer ${user.user.token}`
+                    Authorization: `Bearer ${user.token}`
                 }
             };
             const { data } = await axios.post('http://localhost:5000/api/chat', { userId }, config);
@@ -75,7 +76,7 @@ const SideDrawer = () => {
             setLoading(true)
             const config = {
                 headers: {
-                    Authorization: `Bearer ${user.user.token}`
+                    Authorization: `Bearer ${user.token}`
                 }
             }
             const { data } = await axios.get(`http://localhost:5000/api/user?search=${search}`, config)
@@ -123,12 +124,12 @@ const SideDrawer = () => {
                     </Menu>
                     <Menu>
                         <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-                            <Avatar size='sm' cursor="pointer" name={user.user.name}
-                                src={user.user.pic}
+                            <Avatar size='sm' cursor="pointer" name={user.name}
+                                src={user.pic}
                             />
                         </MenuButton>
                         <MenuList>
-                            <ProfileModel user={user.user}>
+                            <ProfileModel user={user}>
 
                                 <MenuItem>My Profile</MenuItem>
                             </ProfileModel>
