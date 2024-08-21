@@ -2,12 +2,13 @@ import React from 'react'
 import { useChatContext } from '../context/chatContext'
 import { Box, IconButton, Text } from '@chakra-ui/react';
 import { ArrowBackIcon } from '@chakra-ui/icons';
-import { getSenderFull,getSender } from '../config/ChatLogic';
+import { getSenderFull, getSender } from '../config/ChatLogic';
 import ProfileModel from './ProfileModel';
 import UpdateGroupChatModal from '../miscellaneous/UpdateGroupChatModal';
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     const { user, selectedChat, setSelectedChat } = useChatContext();
+    console.log(selectedChat, "selected  chat")
     return (
         <>
             {selectedChat ? (<>
@@ -26,29 +27,35 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                         icon={<ArrowBackIcon />}
                         onClick={() => setSelectedChat("")}
                     />
-                    {!selectedChat.isGroupChat?(<>
-                        {getSender(user,selectedChat.users)}
-                        <ProfileModel user={getSenderFull(user,selectedChat.users)}/>
-                    </>):(
+                    {!selectedChat.isGroupChat ? (<>
+                        {getSender(user, selectedChat.users)}
+                        <ProfileModel user={getSenderFull(user, selectedChat.users)} />
+                    </>) : (
                         <>
-                        { selectedChat.chatName.toUpperCase() }
-                        {<UpdateGroupChatModal fetchAgain={fetchAgain} setFetchAgain={setFetchAgain}  />}
+                            <Box>
+
+                                {selectedChat.chatName.toUpperCase()}
+                                <Text fontSize='12px'>
+                                    {selectedChat.users.slice(0, 3).map(user => user.name).join(', ')}...
+                                </Text>
+                            </Box>
+                            {<UpdateGroupChatModal fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
                         </>
                     )}
 
-                    
+
 
                 </Text>
                 <Box
-                display='flex'
-                flexDir='column'
-                justifyContent='flex-end'
-                p={3}
-                bg='#E8E8E8'
-                w='100%'
-                h='100%'
-                borderRadius='lg'
-                overflowY='hidden'
+                    display='flex'
+                    flexDir='column'
+                    justifyContent='flex-end'
+                    p={3}
+                    bg='#E8E8E8'
+                    w='100%'
+                    h='100%'
+                    borderRadius='lg'
+                    overflowY='hidden'
                 >
 
 

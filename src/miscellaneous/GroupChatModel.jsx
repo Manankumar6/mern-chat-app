@@ -14,8 +14,9 @@ const GroupChatModel = ({ children }) => {
     const [loading, setLoading] = useState(false)
     const toast = useToast()
     const { user, chats, setChats } = useChatContext();
-
-
+    const URL = process.env.REACT_APP_BASE_USER_URL;
+    const CHAT_URL = process.env.REACT_APP_BASE_CHAT_URL;
+    console.log(selectedUsers,"selected user ")
     const handleSearch = async (queary) => {
         setSearch(queary)
         if (!queary) {
@@ -26,10 +27,10 @@ const GroupChatModel = ({ children }) => {
             setLoading(true)
             const config = {
                 headers: {
-                    Authorization: `Bearer ${user.user.token}`
+                    Authorization: `Bearer ${user.token}`
                 }
             }
-            const { data } = await axios.get(`http://localhost:5000/api/user?search=${search}`, config)
+            const { data } = await axios.get(`${URL}?search=${search}`, config)
        
             setLoading(false)
             setSearchResult(data.users)
@@ -60,10 +61,10 @@ const GroupChatModel = ({ children }) => {
             const config = {
                 headers: {
 
-                    Authorization: `Bearer ${user.user.token}`
+                    Authorization: `Bearer ${user.token}`
                 }
             }
-            const { data } = await axios.post('http://localhost:5000/api/chat/group',{
+            const { data } = await axios.post(`${CHAT_URL}/group`,{
                 name:groupChatName,
                 users:JSON.stringify(selectedUsers.map((u)=>u._id))
             }, config);
@@ -140,8 +141,8 @@ const GroupChatModel = ({ children }) => {
                             flexWrap='wrap'
                         >
 
-                            {selectedUsers.map((u) => {
-                                return (<UserBadgeItem key={user._id} user={u} handleFunction={() => { handleDelete(u) }} />)
+                            {selectedUsers.map((u,ind) => {
+                                return (<UserBadgeItem key={ind} user={u} handleFunction={() => { handleDelete(u) }} />)
                             })}
                         </Box>
                         {/* Render search users  */}

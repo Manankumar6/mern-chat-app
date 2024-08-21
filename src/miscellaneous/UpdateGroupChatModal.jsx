@@ -8,18 +8,23 @@ import UserListItem from '../components/UserListItem'
 
 const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
     const { isOpen, onOpen, onClose } = useDisclosure()
+    const { selectedChat, setSelectedChat, user } = useChatContext();
+    console.log(user,"login user")
     const [groupChatName, setGroupChatName] = useState('');
     const [search, setSearch] = useState('');  // Fixed here
     const [searchResult, setSearchResult] = useState([]);  // Fixed here
     const [loading, setLoading] = useState(false)
     const [renameLoading, setRenameLoading] = useState(false)
-    const { selectedChat, setSelectedChat, user } = useChatContext();
     const toast = useToast();
+    const URL = process.env.REACT_APP_BASE_USER_URL;
+    const CHAT_URL = process.env.REACT_APP_BASE_CHAT_URL;
+
+
 
     const handleRemove = async (user1) => {
-        if (selectedChat.groupAdmin._id !== user.user._id && user1._id !== user.user._id) {
+        if (selectedChat.groupAdmin._id !== user._id && user1._id !== user._id) {
             toast({
-                title: 'Only admin can add someone! ',
+                title: 'Only admin can remove someone! ',
                 status: 'error',
                 duration: 4000,
                 isClosable: true,
@@ -32,16 +37,17 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
             const config = {
                 headers: {
 
-                    Authorization: `Bearer ${user.user.token}`
+                    Authorization: `Bearer ${user.token}`
                 }
             }
-            const { data } = await axios.put('http://localhost:5000/api/chat/groupremove', {
+            const { data } = await axios.put(`${CHAT_URL}/groupremove`, {
                 chatId: selectedChat._id,
                 userId: user1._id
             }, config);
+            console.log(data,"after delete user ")
             user1._id === user._id ? setSelectedChat() : setSelectedChat(data);
             setFetchAgain(!fetchAgain)
-            setRenameLoading(false)
+            setLoading(false)
         } catch (error) {
             toast({
                 title: 'Error Occured! ',
@@ -53,8 +59,11 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
         }
 
     }
-    console.log(selectedChat,"SelectedChat data")
+    console.log(user._id,"login uuser if")
+    console.log(selectedChat.groupAdmin._id,"group admin id")
+    // console.log(selectedChat,"SelectedChat data")
     const handleAddUser = async (user1) => {
+      
         if (selectedChat.users.find((u) => u._id === user1._id)) {
             toast({
                 title: 'User already in group! ',
@@ -65,7 +74,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
             });
             return;
         }
-        if (selectedChat.groupAdmin._id !== user.user._id) {
+        if (selectedChat.groupAdmin._id !== user._id) {
             toast({
                 title: 'Only admin can add someone! ',
                 status: 'error',
@@ -80,17 +89,17 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
             const config = {
                 headers: {
 
-                    Authorization: `Bearer ${user.user.token}`
+                    Authorization: `Bearer ${user.token}`
                 }
             }
-            const { data } = await axios.put('http://localhost:5000/api/chat/groupadd', {
+            const { data } = await axios.put(`${CHAT_URL}/groupadd`, {
                 chatId: selectedChat._id,
                 userId: user1._id
             }, config);
-            console.log(data)
+         
             setSelectedChat(data)
             setFetchAgain(!fetchAgain)
-            setRenameLoading(false)
+            setLoading(false)
         } catch (error) {
             toast({
                 title: 'Error Occured! ',
@@ -109,10 +118,10 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
             const config = {
                 headers: {
 
-                    Authorization: `Bearer ${user.user.token}`
+                    Authorization: `Bearer ${user.token}`
                 }
             }
-            const { data } = await axios.put('http://localhost:5000/api/chat/rename', {
+            const { data } = await axios.put(`${CHAT_URL}/rename`, {
                 chatId: selectedChat._id,
                 chatName: groupChatName
             }, config);
@@ -143,10 +152,10 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
             setLoading(true)
             const config = {
                 headers: {
-                    Authorization: `Bearer ${user.user.token}`
+                    Authorization: `Bearer ${user.token}`
                 }
             }
-            const { data } = await axios.get(`http://localhost:5000/api/user?search=${search}`, config)
+            const { data } = await axios.get(`${URL}?search=${search}`, config)
 
             setLoading(false)
             setSearchResult(data.users)
