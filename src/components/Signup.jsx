@@ -8,6 +8,7 @@ const Signup = () => {
     const [loading, setLoading] = useState(false);
     const toast = useToast();
     const navigate = useNavigate();
+    const URL = process.env.REACT_APP_BASE_USER_URL;
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -123,7 +124,7 @@ const Signup = () => {
         }
 
         try {
-            const { data } = await axios.post('http://localhost:5000/api/user/signup', formData);
+            const { data } = await axios.post(`${URL}/signup`, formData);
             toast({
                 title: 'Signup Successful',
                 status: 'success',

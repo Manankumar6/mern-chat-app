@@ -9,25 +9,27 @@ import GroupChatModel from '../miscellaneous/GroupChatModel';
 
 const MyChats = ({fetchAgain}) => {
     const { user, setSelectedChat, selectedChat, chats, setChats } = useChatContext();
-
+  
     const [loggedUser, setLoggedUser] = useState();
     const toast = useToast()
-
+    const URL = process.env.REACT_APP_BASE_CHAT_URL;
     const fetchChat = async () => {
         try {
             const config = {
                 headers: {
 
-                    Authorization: `Bearer ${user.user.token}`
+                    Authorization: `Bearer ${user.token}`
                 }
             }
-            const { data } = await axios.get('http://localhost:5000/api/chat', config);
-
+           
+            const { data } = await axios.get(URL, config);
+         
             setChats(data)
         } catch (error) {
+            console.log(error)
             toast({
                 title: 'Error Occured!',
-                description: "Failed to load Chat",
+                description: "Failed to load Chat from myChat",
                 status: 'error',
                 duration: 4000,
                 isClosable: true,

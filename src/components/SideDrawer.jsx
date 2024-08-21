@@ -10,7 +10,7 @@ import UserListItem from './UserListItem'
 
 const SideDrawer = () => {
     const { user,setSelectedChat ,chats,setChats} = useChatContext();
-    console.log(user)
+    
     const { isOpen, onOpen, onClose } = useDisclosure()
 
     const [search, setSearch] = useState('')
@@ -21,6 +21,8 @@ const SideDrawer = () => {
     const [loadingChat, setLoadingChat] = useState()
     const navigate = useNavigate()
     const toast = useToast();
+    const URL = process.env.REACT_APP_BASE_CHAT_URL;
+  
     const logOutHandler = () => {
         localStorage.removeItem('user')
         navigate('/')
@@ -34,7 +36,7 @@ const SideDrawer = () => {
                     Authorization: `Bearer ${user.token}`
                 }
             };
-            const { data } = await axios.post('http://localhost:5000/api/chat', { userId }, config);
+            const { data } = await axios.post(URL, { userId }, config);
          
     
             if (!chats.find((c) => c._id === data._id)) {

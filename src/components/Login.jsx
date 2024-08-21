@@ -8,11 +8,13 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
     const toast = useToast();
     const navigate = useNavigate();
+ 
     const [formData, setFormData] = useState({
         email: '',
         password: '',
     });
-
+    const URL = process.env.REACT_APP_BASE_USER_URL;
+    
     const handleInput = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
@@ -36,7 +38,7 @@ const Login = () => {
 
         try {
             // Simulate an API request (adjust the endpoint as needed)
-            const { data } = await axios.post('http://localhost:5000/api/user/login', formData);
+            const { data } = await axios.post(`${URL}/login`, formData);
 
             toast({
                 title: 'Login Successful',
