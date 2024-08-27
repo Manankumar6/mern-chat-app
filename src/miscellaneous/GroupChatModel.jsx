@@ -16,7 +16,7 @@ const GroupChatModel = ({ children }) => {
     const { user, chats, setChats } = useChatContext();
     const URL = process.env.REACT_APP_BASE_USER_URL;
     const CHAT_URL = process.env.REACT_APP_BASE_CHAT_URL;
-    console.log(selectedUsers,"selected user ")
+   
     const handleSearch = async (queary) => {
         setSearch(queary)
         if (!queary) {
@@ -68,7 +68,7 @@ const GroupChatModel = ({ children }) => {
                 name:groupChatName,
                 users:JSON.stringify(selectedUsers.map((u)=>u._id))
             }, config);
-            console.log(data,"after create group")
+        
             setChats([data,...chats])
             onClose()
             toast({

@@ -22,6 +22,7 @@ const SideDrawer = () => {
     const navigate = useNavigate()
     const toast = useToast();
     const URL = process.env.REACT_APP_BASE_CHAT_URL;
+    const USER_URL = process.env.REACT_APP_BASE_USER_URL;
   
     const logOutHandler = () => {
         localStorage.removeItem('user')
@@ -81,7 +82,7 @@ const SideDrawer = () => {
                     Authorization: `Bearer ${user.token}`
                 }
             }
-            const { data } = await axios.get(`http://localhost:5000/api/user?search=${search}`, config)
+            const { data } = await axios.get(`${USER_URL}?search=${search}`, config)
            
             setLoading(false)
             setSearchResult(data.users)
@@ -109,7 +110,7 @@ const SideDrawer = () => {
             >
                 <Tooltip label="Search users to chat" hasArrow placement='bottom-end'>
                     <Button variant='ghost' onClick={onOpen}>
-                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <i className="fa-solid fa-magnifying-glass"></i>
                         <Text
                             display={{ base: "none", md: "flex" }}
                             px='4'

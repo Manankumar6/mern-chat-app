@@ -6,10 +6,10 @@ import UserBadgeItem from '../UserAvatar/UserBadgeItem'
 import axios from 'axios'
 import UserListItem from '../components/UserListItem'
 
-const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
+const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain,fetchMessage }) => {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const { selectedChat, setSelectedChat, user } = useChatContext();
-    console.log(user,"login user")
+   
     const [groupChatName, setGroupChatName] = useState('');
     const [search, setSearch] = useState('');  // Fixed here
     const [searchResult, setSearchResult] = useState([]);  // Fixed here
@@ -44,10 +44,11 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
                 chatId: selectedChat._id,
                 userId: user1._id
             }, config);
-            console.log(data,"after delete user ")
+          
             user1._id === user._id ? setSelectedChat() : setSelectedChat(data);
             setFetchAgain(!fetchAgain)
             setLoading(false)
+            fetchMessage();
         } catch (error) {
             toast({
                 title: 'Error Occured! ',
@@ -59,9 +60,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
         }
 
     }
-    console.log(user._id,"login uuser if")
-    console.log(selectedChat.groupAdmin._id,"group admin id")
-    // console.log(selectedChat,"SelectedChat data")
+   
     const handleAddUser = async (user1) => {
       
         if (selectedChat.users.find((u) => u._id === user1._id)) {

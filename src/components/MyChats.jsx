@@ -9,8 +9,8 @@ import GroupChatModel from '../miscellaneous/GroupChatModel';
 
 const MyChats = ({fetchAgain}) => {
     const { user, setSelectedChat, selectedChat, chats, setChats } = useChatContext();
-  
-    const [loggedUser, setLoggedUser] = useState();
+    const [loggedUser, setLoggedUser] = useState(null);
+
     const toast = useToast()
     const URL = process.env.REACT_APP_BASE_CHAT_URL;
     const fetchChat = async () => {
@@ -23,7 +23,7 @@ const MyChats = ({fetchAgain}) => {
             }
            
             const { data } = await axios.get(URL, config);
-         
+     
             setChats(data)
         } catch (error) {
             console.log(error)
@@ -38,7 +38,8 @@ const MyChats = ({fetchAgain}) => {
         }
     }
     useEffect(() => {
-        setLoggedUser(JSON.parse(localStorage.getItem('user')))
+        const user = JSON.parse(localStorage.getItem('user'));
+        setLoggedUser(user)
         fetchChat()
         // eslint-disable-next-line 
     }, [fetchAgain])
@@ -90,6 +91,7 @@ const MyChats = ({fetchAgain}) => {
 
                     >
                         {chats.map((chat,ind) => {
+                           
                             return (
                                 <Box
                                     onClick={() => setSelectedChat(chat)}
@@ -104,7 +106,7 @@ const MyChats = ({fetchAgain}) => {
                                 >
                                     <Text>
                                         {!chat.isGroupChat ? (
-                                            getSender(loggedUser, chat.users)
+                                            getSender(loggedUser, chat.users )
                                         ) : (chat.chatName)}
                                     </Text>
 
