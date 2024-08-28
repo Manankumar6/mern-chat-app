@@ -10,6 +10,13 @@ export const getSender = (loggedUser, users) => {
     return users[1]._id !== loggedUser._id ? users[1].name : users[0].name;
 };
 
+export const getProfile = (loggedUser,users)=>{
+    if (!loggedUser || !users || users.length < 2 || !users[0] || !users[1]) {
+        // Return a fallback or handle the case where users is not as expected
+        return "Unknown Sender";
+    }
+    return users[1]._id !== loggedUser._id ? users[1].pic :users[0].pic
+}
 
 export const getSenderFull = (loggedUser, users) => {
     // Check if loggedUser and users are defined and have the expected structure
@@ -18,7 +25,7 @@ export const getSenderFull = (loggedUser, users) => {
         return null;
     }
 
-    return users[0]._id !== loggedUser._id ? users[1] : users[0];
+    return users[1]._id !== loggedUser._id ? users[1] : users[0];
 };
 
 

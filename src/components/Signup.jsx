@@ -42,7 +42,7 @@ const Signup = () => {
             data.append('file', pics);
             data.append('upload_preset', 'chat-app');
             data.append('cloud_name', 'dc761iynx');
-
+            data.append('transformation', 'c_thumb,w_150,h_150');
             try {
                 const response = await axios.post(
                     'https://api.cloudinary.com/v1_1/dc761iynx/image/upload',

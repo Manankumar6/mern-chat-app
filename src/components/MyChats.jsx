@@ -4,12 +4,12 @@ import { Avatar, Box, Button, Stack, Text, useToast } from '@chakra-ui/react';
 import axios from 'axios';
 import { AddIcon } from '@chakra-ui/icons';
 import ChatLoading from './ChatLoading';
-import { getSender } from '../config/ChatLogic';
+import { getProfile, getSender } from '../config/ChatLogic';
 import GroupChatModel from '../miscellaneous/GroupChatModel';
 
-const MyChats = ({fetchAgain}) => {
+const MyChats = ({ fetchAgain }) => {
     const { user, setSelectedChat, selectedChat, chats, setChats } = useChatContext();
- 
+
     const [loggedUser, setLoggedUser] = useState(null);
 
     const toast = useToast()
@@ -22,9 +22,9 @@ const MyChats = ({fetchAgain}) => {
                     Authorization: `Bearer ${user.token}`
                 }
             }
-           
+
             const { data } = await axios.get(URL, config);
-     
+
             setChats(data)
         } catch (error) {
             console.log(error)
@@ -64,17 +64,17 @@ const MyChats = ({fetchAgain}) => {
                 display='flex'
                 justifyContent='space-between'
                 alignItems='center'
-                 width="100%"
+                width="100%"
             >
                 <Text>My Chats  </Text>
                 <GroupChatModel>
 
-                <Button
-                    display='flex'
-                    fontSize={{ base: '17px', md: "10px", lg: "17px" }}
-                    rightIcon={<AddIcon />}
+                    <Button
+                        display='flex'
+                        fontSize={{ base: '17px', md: "10px", lg: "17px" }}
+                        rightIcon={<AddIcon />}
                     >New Group Chat</Button>
-                    </GroupChatModel>
+                </GroupChatModel>
             </Box>
             <Box
                 display='flex'
@@ -91,12 +91,12 @@ const MyChats = ({fetchAgain}) => {
                     <Stack overflowY='scroll'
 
                     >
-                        {chats.map((chat,ind) => {
-                           
+                        {chats.map((chat, ind) => {
+                            console.log(chat,"chat form my chats ")
                             return (
                                 <Box
-                                display='flex'
-                                alignItems='center'
+                                    display='flex'
+                                    alignItems='center'
                                     onClick={() => setSelectedChat(chat)}
                                     cursor='pointer'
                                     _hover={{ background: "#38B2AC", color: 'white' }}
@@ -108,17 +108,19 @@ const MyChats = ({fetchAgain}) => {
                                     key={ind}
                                 >
                                     <Avatar
-                                    mt='7px'
-                                    mr={1}
-                                    size='sm'
-                                    cursor='pointer'
-                                    name={chat.users[0].name}
-                                    src={chat.users[0].pic}
+                                    
+                                        objectFit='cover'
+                                        mt='7px'
+                                        mr={1}
+                                        size='sm'
+                                        cursor='pointer'
+                                        name={chat.users[0].name}
+                                        src={getProfile(loggedUser, chat.users)}
 
-                                />
+                                    />
                                     <Text>
                                         {!chat.isGroupChat ? (
-                                            getSender(loggedUser, chat.users )
+                                            getSender(loggedUser, chat.users)
                                         ) : (chat.chatName)}
                                     </Text>
 

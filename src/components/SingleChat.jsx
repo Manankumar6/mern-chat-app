@@ -77,26 +77,43 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     }, [selectedChat])
 
     const sendMessage = async (e) => {
-        
         if ((e.key === 'Enter' || e.type === 'click') && newMessage) {
-            socket.emit("stop typing", selectedChat._id)
+            socket.emit("stop typing", selectedChat._id);
+    
+            // Optimistically add the new message to the UI and emit the socket event
+            const tempMessage = {
+                _id: Date.now(),  // temporary ID until the server response
+                sender: user,  // assuming user is the current sender
+                content: newMessage,
+                chat: selectedChat,
+                createdAt: new Date(),
+            };
+    
+            setMessage([...message, tempMessage]);
+            socket.emit("new message", tempMessage);
+    
             try {
                 const config = {
                     headers: {
                         "Content-Type": "application/json",
-                        Authorization: `Bearer ${user.token}`
-                    }
-                }
+                        Authorization: `Bearer ${user.token}`,
+                    },
+                };
                 const { data } = await axios.post(MSG_URL, {
                     content: newMessage,
-                    chatId: selectedChat._id
-                }, config)
-
-                setNewMessage('')
-                socket.emit("new message",data)
-                setMessage([...message, data])
-
+                    chatId: selectedChat._id,
+                }, config);
+    
+                // Update the temporary message with the actual data from the server
+                setMessage(prevMessages => 
+                    prevMessages.map(msg => 
+                        msg._id === tempMessage._id ? data : msg
+                    )
+                );
             } catch (error) {
+                // If the API call fails, remove the optimistically added message
+                setMessage(prevMessages => prevMessages.filter(msg => msg._id !== tempMessage._id));
+                
                 toast({
                     title: 'Failed to send message',
                     status: 'error',
@@ -104,10 +121,12 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                     isClosable: true,
                     position: 'bottom',
                 });
-                return;
+            } finally {
+                setNewMessage('');
             }
         }
-    }
+    };
+    
 
   
 
