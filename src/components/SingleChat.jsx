@@ -9,7 +9,7 @@ import axios from 'axios';
 import ScrollableChat from './ScrollableChat';
 import io from 'socket.io-client';
 
-const ENDPOINT = "http://localhost:5000"
+const ENDPOINT = process.env.REACT_APP_HOST_URL 
 var socket, selectedChatCampare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
