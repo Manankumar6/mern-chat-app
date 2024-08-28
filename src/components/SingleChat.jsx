@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useChatContext } from '../context/chatContext'
-import { Box, FormControl, IconButton, Input, Spinner, Text, useToast } from '@chakra-ui/react';
+import { Box, Button, FormControl, IconButton, Input, Spinner, Text, useToast } from '@chakra-ui/react';
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import { getSenderFull, getSender } from '../config/ChatLogic';
 import ProfileModel from './ProfileModel';
@@ -77,7 +77,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     }, [selectedChat])
 
     const sendMessage = async (e) => {
-        if (e.key === 'Enter' && newMessage) {
+        
+        if ((e.key === 'Enter' || e.type === 'click') && newMessage) {
             socket.emit("stop typing", selectedChat._id)
             try {
                 const config = {
@@ -97,7 +98,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
             } catch (error) {
                 toast({
-                    title: 'Only admin can remove someone! ',
+                    title: 'Failed to send message',
                     status: 'error',
                     duration: 4000,
                     isClosable: true,
@@ -206,16 +207,32 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                     </div>)}
                     <FormControl onKeyDown={sendMessage} isRequired mt={3}>
                         {isTyping?<div>Loading...</div>:<></>}
+                        <Box
+                        display='flex'
+                        alignItems='center'
+                        >
+
                         <Input
                             variant='filled'
                             bg='#E0E0E0'
                             placeholder='Enter a message'
                             onChange={typingHandler}
                             value={newMessage}
+                            mr="15px"
 
                         />
+                        <Button
+                         colorScheme="blue"  // You can change the color scheme
+                         borderRadius="50%"
+                         p={2}
+                         size="sm"
+                         display="flex"
+                         justifyContent="center"
+                         alignItems="center"
+                         onClick={sendMessage}
+                         ><i class="fa-solid fa-arrow-right"></i></Button>
 
-
+                         </Box>
                     </FormControl>
                 </Box>
             </>) : (

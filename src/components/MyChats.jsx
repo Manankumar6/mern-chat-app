@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useChatContext } from '../context/chatContext';
-import { Box, Button, Stack, Text, useToast } from '@chakra-ui/react';
+import { Avatar, Box, Button, Stack, Text, useToast } from '@chakra-ui/react';
 import axios from 'axios';
 import { AddIcon } from '@chakra-ui/icons';
 import ChatLoading from './ChatLoading';
@@ -9,6 +9,7 @@ import GroupChatModel from '../miscellaneous/GroupChatModel';
 
 const MyChats = ({fetchAgain}) => {
     const { user, setSelectedChat, selectedChat, chats, setChats } = useChatContext();
+ 
     const [loggedUser, setLoggedUser] = useState(null);
 
     const toast = useToast()
@@ -94,6 +95,8 @@ const MyChats = ({fetchAgain}) => {
                            
                             return (
                                 <Box
+                                display='flex'
+                                alignItems='center'
                                     onClick={() => setSelectedChat(chat)}
                                     cursor='pointer'
                                     _hover={{ background: "#38B2AC", color: 'white' }}
@@ -104,6 +107,15 @@ const MyChats = ({fetchAgain}) => {
                                     borderRadius='lg'
                                     key={ind}
                                 >
+                                    <Avatar
+                                    mt='7px'
+                                    mr={1}
+                                    size='sm'
+                                    cursor='pointer'
+                                    name={chat.users[0].name}
+                                    src={chat.users[0].pic}
+
+                                />
                                     <Text>
                                         {!chat.isGroupChat ? (
                                             getSender(loggedUser, chat.users )
