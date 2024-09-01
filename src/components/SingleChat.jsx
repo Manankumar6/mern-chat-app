@@ -93,7 +93,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 }, config);
               
                 setNewMessage('');
-                console.log(data)
+               
                 socket.emit("new message", data)
                 setMessage([...message,data])
               
@@ -131,7 +131,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         })
     })
 
-    console.log(notification,"get notifictain")
+
     const typingHandler = (e) => {
         setNewMessage(e.target.value)
         // Typing indicator logic 
