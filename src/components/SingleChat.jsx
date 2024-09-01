@@ -13,7 +13,7 @@ const ENDPOINT = process.env.REACT_APP_HOST_URL
 var socket, selectedChatCampare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
-    const { user, selectedChat, setSelectedChat } = useChatContext();
+    const { user, selectedChat, setSelectedChat,notification,setNotification } = useChatContext();
 
     const [message, setMessage] = useState([])
     const [loading, setLoading] = useState(false)
@@ -26,7 +26,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     const MSG_URL = process.env.REACT_APP_BASE_MESSAGE_URL;
 
   // Socket io connntection 
-
+    
   useEffect(() => {
     socket = io(ENDPOINT, { transports: ['websocket'] });
     socket.emit("setup",user);
@@ -80,18 +80,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         if ((e.key === 'Enter' || e.type === 'click') && newMessage) {
             socket.emit("stop typing", selectedChat._id);
     
-            // Optimistically add the new message to the UI and emit the socket event
-            const tempMessage = {
-                _id: Date.now(),  // temporary ID until the server response
-                sender: user,  // assuming user is the current sender
-                content: newMessage,
-                chat: selectedChat,
-                createdAt: new Date(),
-            };
-    
-            setMessage([...message, tempMessage]);
-            socket.emit("new message", tempMessage);
-    
             try {
                 const config = {
                     headers: {
@@ -103,17 +91,14 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                     content: newMessage,
                     chatId: selectedChat._id,
                 }, config);
-    
-                // Update the temporary message with the actual data from the server
-                setMessage(prevMessages => 
-                    prevMessages.map(msg => 
-                        msg._id === tempMessage._id ? data : msg
-                    )
-                );
+              
+                setNewMessage('');
+                console.log(data)
+                socket.emit("new message", data)
+                setMessage([...message,data])
+              
             } catch (error) {
-                // If the API call fails, remove the optimistically added message
-                setMessage(prevMessages => prevMessages.filter(msg => msg._id !== tempMessage._id));
-                
+               
                 toast({
                     title: 'Failed to send message',
                     status: 'error',
@@ -134,14 +119,19 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         socket.on("message received",(newMessageReceived)=>{
             if(!selectedChatCampare || selectedChatCampare._id !== newMessageReceived.chat._id){
                 // give notification 
+                if(!notification.includes(newMessageReceived)){
+                    setNotification([newMessageReceived,...notification])
+                    setFetchAgain(!fetchAgain)
+                }
+
 
             }else{
-                setMessage([...message,newMessageReceived])
+                setMessage([...message, newMessageReceived]);
             }
         })
     })
 
-
+    console.log(notification,"get notifictain")
     const typingHandler = (e) => {
         setNewMessage(e.target.value)
         // Typing indicator logic 
@@ -183,7 +173,21 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                         onClick={() => setSelectedChat("")}
                     />
                     {!selectedChat.isGroupChat ? (<>
+                    <Box>
+
                         {getSender(user, selectedChat.users)}
+                        {isTyping?
+                           
+                            <Box
+                            display='flex'
+                            alignItems='end'
+                            >
+                            <p style={{fontSize:"10px"}}>Typing</p>
+                           <img src="/loading.gif" alt="loading" style={{width:"25px",height:"10px"}}/>
+                            </Box>
+                           
+                           :<></>}
+                           </Box>
                         <ProfileModel user={getSenderFull(user, selectedChat.users)} />
                     </>) : (
                         <>
@@ -225,7 +229,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                         <ScrollableChat message={message} />
                     </div>)}
                     <FormControl onKeyDown={sendMessage} isRequired mt={3}>
-                        {isTyping?<div>Loading...</div>:<></>}
+                       
                         <Box
                         display='flex'
                         alignItems='center'

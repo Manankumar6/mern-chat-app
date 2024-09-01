@@ -9,11 +9,11 @@ const ProfileModel = ({ user, children }) => {
       {children ? <span onClick={onOpen}>{children}</span> : (
         <IconButton
           display={{ base: "flex" }}
-          icon={<ViewIcon />}
+          icon={<i class="fa-solid fa-user fa-lg"></i>}
           onClick={onOpen}
         />
       )}
-      <Modal size='lg' isCentered isOpen={isOpen} onClose={onClose}>
+      <Modal size='md' isCentered isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent h='410px'>
           <ModalHeader

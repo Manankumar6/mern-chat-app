@@ -92,7 +92,7 @@ const MyChats = ({ fetchAgain }) => {
 
                     >
                         {chats.map((chat, ind) => {
-                            console.log(chat,"chat form my chats ")
+                            
                             return (
                                 <Box
                                     display='flex'
